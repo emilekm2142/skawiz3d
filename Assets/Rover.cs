@@ -60,12 +60,14 @@ public class Rover : MonoBehaviour {
 		// sending data (for the sake of simplicity, back to ourselves):
 		IPEndPoint target = new IPEndPoint(IPAddress.Parse("127.0.0.1"),5555);
 		// send a couple of sample messages:
-		for (int num = 1; num <= 3; num++) {
-			
-			byte[] message = Encoding.ASCII.GetBytes("{\"target\":\"RangeVisualizer\",\"data\":{\"type\":\"rotate\",\"id\":0, \"range\":1, \"dst\":1, \"angle\":15, \"msgId\":0}}");
+        if (false){ //może jednak nie wysyłaj? xd
+            for (int num = 1; num <= 3; num++) {
+                
+                byte[] message = Encoding.ASCII.GetBytes("{\"target\":\"RangeVisualizer\",\"data\":{\"type\":\"rotate\",\"id\":0, \"range\":1, \"dst\":1, \"angle\":15, \"msgId\":0}}");
 
-			socket.Send(message, message.Length, target);
-		}
+                socket.Send(message, message.Length, target);
+            }
+        }
 
 	}
 	
