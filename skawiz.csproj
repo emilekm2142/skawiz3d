@@ -226,6 +226,7 @@
     <Compile Include="Assets\GhostFreeRoamCamera\Demo\Scripts\GUIHelper.cs" />
     <Compile Include="Assets\GhostFreeRoamCamera\Scripts\GhostFreeRoamCamera.cs" />
     <Compile Include="Assets\JsonParser.cs" />
+    <Compile Include="Assets\Point.cs" />
     <Compile Include="Assets\Rover.cs" />
     <Compile Include="Assets\UnityMainThreadDispatcher.cs" />
   </ItemGroup>

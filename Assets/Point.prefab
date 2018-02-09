@@ -22,6 +22,7 @@ GameObject:
   - component: {fileID: 33108066829306834}
   - component: {fileID: 135678962335019092}
   - component: {fileID: 23984002978320592}
+  - component: {fileID: 114040516118217516}
   m_Layer: 0
   m_Name: Point
   m_TagString: Untagged
@@ -83,6 +84,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1451665351118278}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &114040516118217516
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1451665351118278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 656b18eb225f11040aff8ad595e013ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: {fileID: 0}
+  detector: {fileID: 0}
+  distance: 1
 --- !u!135 &135678962335019092
 SphereCollider:
   m_ObjectHideFlags: 1

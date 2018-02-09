@@ -36,7 +36,9 @@ public class Rover : MonoBehaviour {
 	public GameObject point;
 	public GameObject line;
 	public Text log;
+    public Text pointDataIndicator;
 	public static String lastMsg = "";
+    public static List<int> ids = new List<int>();
 	// Use this for initialization
 	public Detector getDetectorById(int id){
 		return detectors.Where (x => x.id == id).ToList()[0];
@@ -60,12 +62,19 @@ public class Rover : MonoBehaviour {
 		// sending data (for the sake of simplicity, back to ourselves):
 		IPEndPoint target = new IPEndPoint(IPAddress.Parse("127.0.0.1"),5555);
 		// send a couple of sample messages:
-        if (false){ //może jednak nie wysyłaj? xd
+        if (true){ //może jednak nie wysyłaj? xd
             for (int num = 1; num <= 3; num++) {
-                
-                byte[] message = Encoding.ASCII.GetBytes("{\"target\":\"RangeVisualizer\",\"data\":{\"type\":\"rotate\",\"id\":0, \"range\":1, \"dst\":1, \"angle\":15, \"msgId\":0}}");
+
+                byte[] message3= Encoding.ASCII.GetBytes("{\"target\":\"RangeVisualizer\",\"data\":{\"type\":\"detect\",\"id\":0, \"range\":1, \"dst\":1, \"angle\":15, \"msgId\":0}}");
+
+                socket.Send(message3, message3.Length, target);
+                byte[] message = Encoding.ASCII.GetBytes("{\"target\":\"RangeVisualizer\",\"data\":{\"type\":\"rotate\",\"id\":0, \"range\":1, \"dst\":1, \"angle\":15, \"msgId\":1}}");
 
                 socket.Send(message, message.Length, target);
+
+                byte[] message2 = Encoding.ASCII.GetBytes("{\"target\":\"RangeVisualizer\",\"data\":{\"type\":\"detect\",\"id\":0, \"range\":1, \"dst\":1, \"angle\":15, \"msgId\":2}}");
+
+                socket.Send(message2, message2.Length, target);
             }
         }
 
@@ -115,56 +124,64 @@ public class Rover : MonoBehaviour {
 				Debug.Log ("true");
                 
 				var data = ((Dictionary<string,object>)parsed) ["data"];
-                if (((Dictionary<string, object>)data)["type"] as String == "detect")
+                int id = (int)((Dictionary<string, object>)data)["msgId"];
+                if (!ids.Contains(id))
+
+                {
+                    ids.Add(id);
+                    if (((Dictionary<string, object>)data)["type"] as String == "detect")
                 {
                     Debug.Log("a");
                     int index = (int)((Dictionary<string, object>)data)["id"];
-                    float range;
-                    Debug.Log("a");
-                    try
-                    {
-                        range = (float)((Dictionary<string, object>)data)["range"];
-                    }
-                    catch (Exception e)
-                    {
-                        range = Convert.ToSingle(((int)((Dictionary<string, object>)data)["range"]));
-                    }
-                    Debug.Log("a");
-                    Debug.Log(index);
-                    Debug.Log(range);
+                    
+                   
+                        float range;
+                        Debug.Log("a");
+                        try
+                        {
+                            range = (float)((Dictionary<string, object>)data)["range"];
+                        }
+                        catch (Exception e)
+                        {
+                            range = Convert.ToSingle(((int)((Dictionary<string, object>)data)["range"]));
+                        }
+                        Debug.Log("a");
+                        Debug.Log(index);
+                        Debug.Log(range);
 
 
-                    UnityMainThreadDispatcher.Instance().Enqueue(() => detectors[index].detect(range));
-                }
-                else if (((Dictionary<string, object>)data)["type"] as String == "move")
-                {
-                    float dst;
-                    Debug.Log("a");
-                    try
-                    {
-                        dst = (float)((Dictionary<string, object>)data)["x"];
+                        UnityMainThreadDispatcher.Instance().Enqueue(() => detectors[index].detect(range));
                     }
-                    catch (Exception e)
+                    else if (((Dictionary<string, object>)data)["type"] as String == "move")
                     {
-                       dst = Convert.ToSingle(((int)((Dictionary<string, object>)data)["x"]));
+                        float dst;
+                        Debug.Log("a");
+                        try
+                        {
+                            dst = (float)((Dictionary<string, object>)data)["x"];
+                        }
+                        catch (Exception e)
+                        {
+                            dst = Convert.ToSingle(((int)((Dictionary<string, object>)data)["x"]));
+                        }
+
+                        UnityMainThreadDispatcher.Instance().Enqueue(() => GameObject.FindObjectOfType<Rover>().transform.position = GameObject.FindObjectOfType<Rover>().transform.position + GameObject.FindObjectOfType<Rover>().transform.forward * dst);
                     }
-                    
-                    UnityMainThreadDispatcher.Instance().Enqueue(() => GameObject.FindObjectOfType<Rover>().transform.position = GameObject.FindObjectOfType<Rover>().transform.position + GameObject.FindObjectOfType<Rover>().transform.forward*dst);
-                }
-                else if (((Dictionary<string, object>)data)["type"] as String == "rotate")
-                {
-                    float angle;
-                    Debug.Log("a");
-                    try
+                    else if (((Dictionary<string, object>)data)["type"] as String == "rotate")
                     {
-                        angle = (float)((Dictionary<string, object>)data)["angle"];
+                        float angle;
+                        Debug.Log("a");
+                        try
+                        {
+                            angle = (float)((Dictionary<string, object>)data)["angle"];
+                        }
+                        catch (Exception e)
+                        {
+                            angle = Convert.ToSingle(((int)((Dictionary<string, object>)data)["angle"]));
+                        }
+
+                        UnityMainThreadDispatcher.Instance().Enqueue(() => GameObject.FindObjectOfType<Rover>().transform.Rotate(0, angle, 0));
                     }
-                    catch (Exception e)
-                    {
-                        angle = Convert.ToSingle(((int)((Dictionary<string, object>)data)["angle"]));
-                    }
-                    
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>  GameObject.FindObjectOfType<Rover>().transform.Rotate(0,angle,0));
                 }
 
             }

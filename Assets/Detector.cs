@@ -23,6 +23,8 @@ public class Detector : MonoBehaviour {
 		Vector3 spawnPos = detectorPos + detectorDirection*distance;
         var newPoint= Instantiate(point, spawnPos, rotation);
         Rover.points.Add(newPoint);
+        point.GetComponent<Point>().detector = this.gameObject;
+        point.GetComponent<Point>().distance = distance;
         points.Add(newPoint);
 		var line = Instantiate (lineObj, spawnPos, rotation);
         Rover.lines.Add(line);
